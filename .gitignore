@@ -1,3 +1,5 @@
 /input
 /models
-/detr__ipycache__
+__pycache__/
+detr/
+model_weights.pth

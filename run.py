@@ -62,8 +62,6 @@ class Runner:
         optimizer = torch.optim.AdamW(model.parameters(), lr=self.LR)
         
         best_loss = 10**5
-        epochs_no_improve = 0
-        n_epochs_stop = 5
 
         for epoch in range(self.EPOCHS):
             train_loss = train_fn(train_data_loader, model, criterion, optimizer, device, scheduler=None, epoch=epoch, batch_size=self.BATCH_SIZE)
@@ -75,12 +73,6 @@ class Runner:
                 best_loss = valid_loss.avg
                 print('Best model found in Epoch {}........Saving Model'.format(epoch+1))
                 torch.save(model.state_dict(), f'models/detr_best_{epoch}.pth')
-                epochs_no_improve = 0
-            else:
-                epochs_no_improve += 1
-                if epochs_no_improve == self.n_epochs_stop:
-                    print('Early stopping!')
-                    break
 
         torch.save(model.state_dict(), 'models/detr_final.pth')
         self.writer.close()
