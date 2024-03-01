@@ -53,7 +53,7 @@ class Runner:
             collate_fn=collate_fn
         )
         
-        device = torch.device('cuda')
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = DETRModel(num_classes=self.num_classes,num_queries=self.num_queries)
         model = model.to(device)
         criterion = SetCriterion(self.num_classes -1, self.matcher, self.weight_dict, eos_coef = self.null_class_coef, losses=self.losses)
