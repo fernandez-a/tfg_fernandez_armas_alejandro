@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  run:
+    build: .
+    user: ${CURRENT_UID}
+    command: python3.8 /usr/scripts/runner.py
+    volumes:
+      - ./scripts:/usr/scripts:ro
+      - ./input:/usr/input:ro
+      - ./utils:/usr/utils:ro
+      - ./runs:/usr/runs
+      - ./models:/usr/models
+      - ./detr:/usr/detr:ro
+
+  visualize:
+    build: .
+    user: ${CURRENT_UID}
+    command: python3.8 /usr/scripts/eval.py
+    volumes:
+      - ./scripts:/usr/scripts:ro
+      - ./input:/usr/input:ro
+      - ./utils:/usr/utils:ro
