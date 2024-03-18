@@ -6,3 +6,5 @@ model_weights.pth
 /detr
 /tfg/
 /input/
+/runs/
+/models
