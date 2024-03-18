@@ -1,5 +1,8 @@
-/input
+
 /models
 __pycache__/
-detr/
 model_weights.pth
+/csv
+/detr
+/tfg/
+/input/
