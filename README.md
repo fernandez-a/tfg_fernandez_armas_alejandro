@@ -3,7 +3,7 @@ The code has been put inside a docker container to help the reproduction of the 
 
 ## Docker
 
-For running the code you will need to:
+For running the code you will need to ensure that you have free memory on your system and then:
 
 ### Build run image
 
