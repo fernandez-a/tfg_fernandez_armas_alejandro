@@ -3,16 +3,6 @@ from utils.average_meter import AverageMeter
 from tqdm import tqdm
 import numpy as np
 from shapely.geometry import box
-def calculate_iou(gt_bbox, pred_bbox):
-    gt_box = box(gt_bbox[0], gt_bbox[1], gt_bbox[0] + gt_bbox[2], gt_bbox[1] + gt_bbox[3])
-    pred_box = box(pred_bbox[0], pred_bbox[1], pred_bbox[0] + pred_bbox[2], pred_bbox[1] + pred_bbox[3])
-     
-    intersection = gt_box.intersection(pred_box).area
-    union = gt_box.union(pred_box).area
- 
-    iou = intersection / union
-    return iou
-
 
 def train_fn(data_loader, model, criterion, optimizer, device, scheduler, epoch, batch_size):
     model.train()
