@@ -1,7 +1,7 @@
 from run import Runner
 
 def main():
-    num_classes = 3
+    num_classes = 2
     num_queries = 100
     null_class_coef = 0.5
     BATCH_SIZE = 8

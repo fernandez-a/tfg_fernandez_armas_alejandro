@@ -3,7 +3,9 @@ from torch.utils.data import Dataset
 import numpy as np 
 import albumentations as A
 import cv2
-DIR_TRAIN = 'input/train'
+from torchvision.transforms import ToTensor
+
+DIR_TRAIN = 'input/train_powdery'
 
 class LeafDataset(Dataset):
     def __init__(self,image_ids,dataframe,transforms=None):
@@ -16,22 +18,21 @@ class LeafDataset(Dataset):
         return self.image_ids.shape[0]
     
     def __getitem__(self,index):
-        image_id = self.image_ids[index]
+        index_df = self.df.iloc[index]
+        image_id = index_df['image_id']
         records = self.df[self.df['image_id'] == image_id]
+
         source = records['source'].values[0]
         image = cv2.imread(f'{DIR_TRAIN}/{source}', cv2.IMREAD_COLOR)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
         image /= 255.0
-        # DETR takes in data in coco format 
+
+        #Obtaing boxes values
         boxes = records[['x', 'y', 'w', 'h']].values
-        
         #Area of bb
         area = boxes[:,2]*boxes[:,3]
         area = torch.as_tensor(area, dtype=torch.float32)
-        
-        # AS pointed out by PRVI It works better if the main class is labelled as zero
-        labels =  np.zeros(len(boxes), dtype=np.int32)
-
+        labels = records['label'].tolist()
         try:
             if self.transforms:
                 sample = {
@@ -39,19 +40,20 @@ class LeafDataset(Dataset):
                     'bboxes': boxes,
                     'labels': labels
                 }
-                sample = self.transforms(**sample)
+                sample['image'] = ToTensor()(sample['image'])
                 image = sample['image']
                 boxes = sample['bboxes']
                 labels = sample['labels']
-        except:
+        except Exception as e:
             print(source)
+            print(str(e))
             
         #Normalizing BBOXES
-            
         _,h,w = image.shape
         try:
-            boxes = A.augmentations.bbox_utils.normalize_bboxes(sample['bboxes'],rows=h,cols=w)
-        except:
+            boxes = A.normalize_bboxes(sample['bboxes'],rows=h,cols=w)
+        except Exception as e:
+            print(str(e))
             print(source)
         target = {}
         target['boxes'] = torch.as_tensor(boxes,dtype=torch.float32)
