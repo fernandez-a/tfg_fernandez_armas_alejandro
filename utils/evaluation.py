@@ -5,11 +5,11 @@ import torch
 from utils.leafDataset import LeafDataset
 import albumentations as A
 import numpy as np
-from utils.transformation import get_valid_transforms
+from utils.transformations import get_valid_transforms
 from utils.train_eval import collate_fn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from sklearn.metrics import precision_recall_curve, auc, roc_auc_score,average_precision_score, precision_score, recall_score, f1_score
+from sklearn.metrics import precision_recall_curve, auc,average_precision_score, precision_score, recall_score
 
 import sys
 import cv2
@@ -114,7 +114,7 @@ def view_sample(df_test, model, device, marking, BATCH_SIZE):
                                     collate_fn=collate_fn)
     
     images, targets, image_ids = next(iter(valid_data_loader))
-    
+    _, h, w = images[0].shape
     images = list(img.to(device) for img in images)
     targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
     labels = targets[0]['labels'].cpu().numpy()
